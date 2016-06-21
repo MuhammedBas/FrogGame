@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<META http-equiv=content-type content=text/html;charset=iso-8859-9>
+<link rel="stylesheet" type="text/css" href="style.css"/>
+<script src="js/jquery.min.js"></script>
+
+
+<style>
+div {
+    width: 100px;
+    height: 100px;
+    position: relative;
+}
+
+</style>
+
+<script>
+var level=1;
+var luck1=1;
+var tas=[];
+var ID_SAYAC;
+var oneJump=200;
+var doubleJump=400;	
+var lastJumpID;
+var whereJump;	
+
+var locked;
+ 
+	if(level==1){
+	
+	tas[0]=	"newfrogR1";
+	tas[1]="null";
+	tas[2]="newfrogL1";
+	}
+	
+	
+
+function gameExit(){
+	window.location.href="index.html";	
+	}
+function gameStart(){
+	window.location.href="game.html";	
+	}
+function sans(){
+	
+	if(luck1==1)
+	{
+		var i;
+		var img = document.getElementById(lastJumpID);
+		var konum=img.style.left.split("px");
+		for (i=0; i<tas.length;i++)
+		{ 
+		
+				if (lastJumpID == tas[i])
+				{
+					
+					luck1=0;
+					var luck_Div = document.getElementById("luck");
+					luck_Div.innerHTML=luck1;
+					
+				if (whereJump=="r"){
+					
+					leftJump(lastJumpID, konum[0]);
+						
+					}
+				else {
+						
+						rightJump(lastJumpID, konum[0]);
+						locked=true;
+						
+					}
+					
+				
+				}}}
+	
+	
+	
+	}
+		
+function restart(number) {
+	var x;
+	if (number==1)
+		{
+			if (confirm("Yanlış yerleştirdiniz.Yeniden başlamak ister misiniz?") == true) {
+				gameStart();
+			} else {
+			   gameExit();
+			}
+			document.getElementById("demo").innerHTML = x;
+			}
+	else	
+		{	
+			if (confirm("Süreniz doldu yeniden başlamak ister misiniz?") == true) {
+				gameStart();
+			} else {
+			   gameExit();
+			}
+			document.getElementById("demo").innerHTML = x;
+		}
+}
+
+function jump(id)
+{
+	
+	locked=false;
+	var img = document.getElementById(id);
+	var cur_l = img.style.left.split("px");
+	var cur_r = img.style.top.split("px");
+	
+	var i;
+	
+		if(id.indexOf("R") > -1)
+		{
+			
+			rightJump(id, cur_l[0]);
+			lastJumpID=id;
+				
+				
+		}
+		else
+		{
+			leftJump(id, cur_l[0]);
+			lastJumpID=id;
+			
+		}
+		if(level==1){			
+					if (tas[0]=="newfrogL1" && tas[1]=="null" && tas[2]=="newfrogR1"){
+					level+=1;
+					nextLevel();
+					}}
+				else if(level==2){
+					if(tas[0]=="newfrogL1" && tas[1]=="newfrogL2" && tas[2]=="null" && tas[3]=="newfrogR2" && tas[4]=="newfrogR1"){
+					level+=1;
+					nextLevel();
+				}}else{
+					if(tas[0]=="newfrogL1" && tas[1]=="newfrogL2" && tas[2]=="newfrogL3" && tas[3]=="null" && tas[4]=="newfrogR3" && tas[5]=="newfrogR2" && tas[6]=="newfrogR1"){
+					
+					if (confirm("Kazandınız.Yeniden başlamak ister misiniz?") == true) {
+						gameStart();
+					} else {
+					   gameExit();
+					}}}
+	
+	
+}
+
+function rightJump(id, konum){
+	var i;
+	whereJump="r";
+	
+	
+	
+	var img = document.getElementById(id);
+	var cur_l = img.style.left.split("px");
+	var cur_r = img.style.top.split("px");
+	
+	for (i=0; i<tas.length;i++)
+	{ 
+	
+		if (id == tas[i])
+		{ 
+		
+			if (tas[i+1] =="null")
+				{
+											
+
+						var x = (konum -0+ oneJump);
+						var y = (cur_r[0] );
+						
+						move(id,x,y);
+						var degistir;
+						degistir=tas[i];
+						tas[i]=tas[i+1]
+						tas[i+1]=degistir;
+					}
+			else if (tas[i+2] =="null" )
+				{
+						var x = (konum - 0+doubleJump);
+						var y = (cur_r[0] );
+						
+								
+						move(id,x,y);
+						var degistir;
+						degistir=tas[i];
+						tas[i]=tas[i+2]
+						tas[i+2]=degistir;
+					}
+			
+		}
+					
+				
+	}
+}
+	
+function leftJump(id, konum){
+	if (locked)
+	next();
+	
+	
+	var i;
+	
+	whereJump="l";
+	
+	var img = document.getElementById(id);
+	var cur_l = img.style.left.split("px");
+	var cur_r = img.style.top.split("px");
+	
+	for (i=0; i<tas.length;i++)
+	{ 
+		if (id == tas[i])
+		{ 
+		
+			if (tas[i-1] =="null")
+				{
+						var x = (konum - oneJump);
+						var y = (cur_r[0] );
+						
+						move(id,x,y);
+						var degistir;
+						degistir=tas[i];
+						tas[i]=tas[i-1]
+						tas[i-1]=degistir;
+					}
+			else if (tas[i-2] =="null" )
+				{
+						var x = (konum - doubleJump);
+						var y = (cur_r[0] );
+						
+						move(id,x,y);
+						var degistir;
+						degistir=tas[i];
+						tas[i]=tas[i-2]
+						tas[i-2]=degistir;
+					}
+			else 
+				{
+					if (luck1==0)
+					{
+						restart(1);
+					}
+			}	
+		}
+				
+	}
+	}
+function move(id,x,y)
+{
+	var img = document.getElementById(id);
+	img.style.left = x+"px";
+	img.style.top = y+"px";
+	return x;
+}
+//Progress bar....
+function progresbar(){
+var saniye;
+
+
+//==============level-----------------
+if (level==1)
+saniye=100;
+else if (level==2)
+saniye=150;
+else
+saniye=200;
+
+//stop prev timmer
+clearInterval(ID_SAYAC);
+
+
+
+
+
+function sayac()
+  {
+	  	var sayac_div = document.getElementById("sayac");
+	    //sayac_div.innerHTML=saniye;  //progres barda kaç saniye kaldığını gösteriyor
+    	saniye-=1;
+  		var img = document.getElementById('sayac');
+		
+		
+		
+		var sayacBoyutu;
+		if (level==1)
+		sayacBoyutu=12;
+		else if (level==2)
+		sayacBoyutu=8;
+		else 
+		sayacBoyutu=6;
+		
+		img.style.width=(saniye * sayacBoyutu) + "px";
+	
+		if (saniye <0)	
+		{
+			restart();
+		
+		}
+}
+	ID_SAYAC = setInterval(sayac, 100);}
+
+	
+
+function nextLevel(){
+	lastJumpID="";
+	if(level>3 || level<0){
+		level=3;
+		var level_Div = document.getElementById("level");
+		level_Div.innerHTML="Level:  " + level;
+	}
+	else {	
+			levelUp()
+			var level_Div = document.getElementById("level");
+			level_Div.innerHTML="Level:  " + level;
+				
+		}
+		}
+function levelUp(){ 
+
+	
+	
+	
+	var levelupper="images/level"+ level +".jpg";
+	document.body.style.background="url('"+levelupper+"')";	
+	
+		var level_Div = document.getElementById("level");
+		level_Div.innerHTML="Level:  " + level;
+		
+		if(level==1){
+		saniye=100;
+		move('newfrogL1',710,-160);
+		move('newfrogR1',310,-160);
+		progresbar();
+		}
+		
+		if (level==2){
+	
+	
+		saniye=150;
+		
+		tas[0]=	"newfrogR2";
+		tas[1]="newfrogR1";
+		tas[2]="null";
+		tas[3]="newfrogL1";
+		tas[4]="newfrogL2";
+		
+		move('newfrogL1',710,-160);
+		move('newfrogR1',310,-160);
+		move('newfrogL2',910,-160);
+		move('newfrogR2',110,-160);
+		document.getElementById("newfrogL2").style.visibility="visible";
+		document.getElementById("newfrogR2").style.visibility="visible";
+		progresbar();
+		}
+		
+		if(level==3){
+		
+		saniye=200;
+			
+			
+		tas[0]="newfrogR3";
+		tas[1]="newfrogR2";
+		tas[2]="newfrogR1";
+		tas[3]="null";
+		tas[4]="newfrogL1";
+		tas[5]="newfrogL2";
+		tas[6]="newfrogL3";
+		
+		move('newfrogL1',710,-160);
+		move('newfrogR1',310,-160);
+		move('newfrogL2',910,-160);
+		move('newfrogR2',110,-160);
+		move('newfrogL3',1110,-160);
+		move('newfrogR3',-70,-160);
+		
+		document.getElementById("newfrogL3").style.visibility="visible";
+		document.getElementById("newfrogR3").style.visibility="visible";
+		progresbar();
+		}
+	}
+</script>
+
+</head><body><div  id="star-dis">
+<img id="star" class="star"  onClick="sans()" src="images/star.png"/>
+<div class="star"><span id="luck"></span></div>
+<div id="level"></div></div>
+<div id="sayac-dis">
+<div id="sayac"></div>
+<img id="newfrogL1" class="newfrog" onClick="jump('newfrogL1')" src="images/Left-frog.png"/>
+<img id="newfrogR1" class="newfrog" onClick="jump('newfrogR1')" src="images/Right-frog.png"/>
+
+<img id="newfrogL2" class="newfrog" onClick="jump('newfrogL2')" src="images/Left-frog.png" style="visibility:hidden" />
+<img id="newfrogR2" class="newfrog" onClick="jump('newfrogR2')" src="images/Right-frog.png" style="visibility:hidden"/>
+
+<img id="newfrogL3" class="newfrog" onClick="jump('newfrogL3')" src="images/Left-frog.png" style="visibility:hidden"/>
+<img id="newfrogR3" class="newfrog" onClick="jump('newfrogR3')" src="images/Right-frog.png" style="visibility:hidden"/>
+
+</body>
+</html>
+
+<script>
+move('newfrogL1',710,-160);
+move('newfrogR1',310,-160);
+
+var luck_Div = document.getElementById("luck");
+luck_Div.innerHTML=luck1;
+levelUp();
+
+				
+</script>
